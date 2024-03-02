@@ -81,6 +81,12 @@ foreach (City city in citys)
 
 
 
+Console.WriteLine(SearchMethods.CalculateDistance(38.3494571, -97.2156415, 37.8098997, -96.8943313));
+
+
+
+
+
 
 Console.WriteLine("Enter your starting city");
 string startingCity = Console.ReadLine();
@@ -115,12 +121,40 @@ foreach(string city in dfsTest)
 */
 
 //Breadth First Search
-List<string> bfsTest = SearchMethods.BreadthFirstSearch(citys, startingCity, destinationCity);
+//List<string> bfsTest = SearchMethods.BreadthFirstSearch(citys, startingCity, destinationCity);
 
+/*
 foreach(string city in bfsTest)
 {
     Console.WriteLine(city);
 }
+*/
+
+//ID-DFS
+List<string> IDDFS = SearchMethods.IterativeDeepeningDFS(citys, startingCity, destinationCity, 9);
+
+if(IDDFS.Count == 0)
+{
+    Console.WriteLine("Could not find target within the specified depth");
+}
+
+
+//Best First Search
+//List<string> bestFirstSearch = SearchMethods.BestFirstSearch(citys, startingCity, destinationCity);
+
+/*
+foreach(String s in bestFirstSearch)
+{
+    Console.WriteLine(s);
+}
+*/
+
+
+//Console.WriteLine(SearchMethods.CalculateDistance(38.9220277, -97.2666667, 39.0379342, -96.8799338));
+//Console.WriteLine(SearchMethods.CalculateDistance(38.9220277, -97.2666667, 38.8254325, -97.702327));
+//Console.WriteLine(SearchMethods.CalculateDistance(38.9220277, -97.2666667, 38.3589767, -97.0267385));
+//Console.WriteLine(SearchMethods.CalculateDistance(38.9220277, -97.2666667, 38.88509, -99.326202));
+
 
 
 

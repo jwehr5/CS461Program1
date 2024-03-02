@@ -113,42 +113,58 @@ public static class SearchMethods
 
 
 
-    public static List<string> IterativeDeepeningDFS(List<City> cityList, string startingCity, string endCity, int steps)
+    public static bool IterativeDeepeningDFS(City startingCity, City endCity, int steps)
     {
         List<string> travelPath = new List<string>();
-        List<City> startingCities = new List<City>();
-
-        travelPath.Add(startingCity);
-
-        foreach (City city in cityList)
+        for (int i = 0; i < steps; i++)
         {
-            if (city.Name == startingCity)
+            travelPath.Clear();
+            if(DLS(startingCity, endCity, i, ref travelPath) == true)
             {
-                foreach (City adjacentCity in city.AdjacentCities)
+                Console.WriteLine(i);
+                foreach(string s in travelPath)
                 {
-                    startingCities.Add(adjacentCity);
+                    Console.WriteLine(s);
                 }
+                return true;
             }
-        }
 
-
-        Stack<City> discoveredCities = new Stack<City>();
-        if(steps == 1)
-        {
-            
-
-        }else if(steps > 1)
-        {
-            foreach(City adjacentCity in startingCities)
+            Console.WriteLine();
+            Console.WriteLine(i);
+            foreach (string s in travelPath)
             {
+                Console.WriteLine(s);
+            }
 
+        }
+
+        return false;  
+    }
+
+    public static bool DLS(City origin, City endCity, int limit, ref List<string> travelPath)
+    {
+        
+        if (origin.Name == endCity.Name)
+        {
+            return true; 
+        }
+
+        if(limit <= 0)
+        {
+            //travelPath.Clear();
+            return false;
+        }
+
+        foreach(City adjacentCity in origin.AdjacentCities)
+        {
+            travelPath.Add(adjacentCity.Name);
+            if(DLS(adjacentCity, endCity, limit - 1, ref travelPath) == true)
+            {
+                return true;
             }
         }
 
-
-       
-
-        return travelPath;
+        return false;
     }
 
 

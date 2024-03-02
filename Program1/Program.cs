@@ -69,7 +69,7 @@ foreach (City city1 in citys)
 
 foreach (City city in citys)
 {
-    if (city.Name == "Hillsboro")
+    if (city.Name == "Salina")
     {
         foreach (City adjacentCity in city.AdjacentCities)
         {
@@ -81,7 +81,7 @@ foreach (City city in citys)
 
 
 
-Console.WriteLine(SearchMethods.CalculateDistance(38.3494571, -97.2156415, 37.8098997, -96.8943313));
+//Console.WriteLine(SearchMethods.CalculateDistance(38.3494571, -97.2156415, 37.8098997, -96.8943313));
 
 
 
@@ -131,12 +131,24 @@ foreach(string city in bfsTest)
 */
 
 //ID-DFS
-List<string> IDDFS = SearchMethods.IterativeDeepeningDFS(citys, startingCity, destinationCity, 9);
 
-if(IDDFS.Count == 0)
+City originCity = null;
+City endCity = null;
+
+foreach(City  c in citys)
 {
-    Console.WriteLine("Could not find target within the specified depth");
+    if(c.Name == startingCity)
+    {
+        originCity = c;
+    }
+
+    if (c.Name == destinationCity)
+    {
+        endCity = c;
+    }
 }
+
+Console.WriteLine(SearchMethods.IterativeDeepeningDFS(originCity, endCity, 5));
 
 
 //Best First Search

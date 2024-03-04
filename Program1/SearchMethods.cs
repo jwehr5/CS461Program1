@@ -116,10 +116,12 @@ public static class SearchMethods
     public static bool IterativeDeepeningDFS(City startingCity, City endCity, int steps)
     {
         List<string> travelPath = new List<string>();
+        
         for (int i = 0; i < steps; i++)
         {
             travelPath.Clear();
-            if(DLS(startingCity, endCity, i, ref travelPath) == true)
+            travelPath.Add(startingCity.Name);
+            if (DLS(startingCity, endCity, i, ref travelPath) == true)
             {
                 Console.WriteLine(i);
                 foreach(string s in travelPath)
@@ -157,11 +159,19 @@ public static class SearchMethods
 
         foreach(City adjacentCity in origin.AdjacentCities)
         {
-            travelPath.Add(adjacentCity.Name);
-            if(DLS(adjacentCity, endCity, limit - 1, ref travelPath) == true)
+            if (!travelPath.Contains(adjacentCity.Name))
             {
-                return true;
+                travelPath.Add(adjacentCity.Name);
+
+                if (DLS(adjacentCity, endCity, limit - 1, ref travelPath) == true)
+                {
+                    return true;
+                }
+
             }
+
+            
+
         }
 
         return false;
@@ -224,9 +234,7 @@ public static class SearchMethods
 
                     recentlyDiscoveredCities.Enqueue(adjacentCity, CalculateDistance(currentCity.XCoordinate, currentCity.YCoordinate, adjacentCity.XCoordinate, adjacentCity.YCoordinate));
                     
-                    
-
-
+                   
                 }
 
             }
@@ -235,12 +243,77 @@ public static class SearchMethods
             currentCity = recentlyDiscoveredCities.Dequeue();
             
             
-
         }
 
 
         travelPath.Add(currentCity.Name);
         return travelPath;
+    }
+
+    public static List<City> AStarSearch(City startingCity, City endCity)
+    {
+        //Store all the cities we visit into this list.
+        List<City> travelPath = new List<City>();
+        travelPath.Add(startingCity);
+
+        List<City> recentlyDiscoveredCities = new List<City>();
+
+        
+
+        //Add all the cities that our starting city is adjacent to into this list
+        recentlyDiscoveredCities.AddRange(startingCity.AdjacentCities);
+
+        
+        City closestCity = recentlyDiscoveredCities[0];
+        
+        while (closestCity.Name != endCity.Name)
+        {
+            //Check each adjacent city to see which one is the closest to our end city
+            for (int i = 1; i < recentlyDiscoveredCities.Count; i++)
+            {
+                //If our goal city is a neighbor of the current city we searching through, then stop the search.
+                if (recentlyDiscoveredCities[i].Name == endCity.Name)
+                {
+                        travelPath.Add(recentlyDiscoveredCities[i]);
+                        return travelPath;
+                }
+
+
+                if (CalculateDistance(closestCity.XCoordinate, closestCity.YCoordinate, endCity.XCoordinate, endCity.YCoordinate) >
+                        CalculateDistance(recentlyDiscoveredCities[i].XCoordinate, recentlyDiscoveredCities[i].YCoordinate, endCity.XCoordinate, endCity.YCoordinate))
+                {
+                        closestCity = recentlyDiscoveredCities[i];
+                }
+
+               
+            }
+
+            //From each adjacent city, the city that was closest to our end city will be added to the travel path
+            travelPath.Add(closestCity);
+
+            //Clear the list and replace it with the adjacent cities of our recently found closest city
+            recentlyDiscoveredCities.Clear();
+            recentlyDiscoveredCities.AddRange(closestCity.AdjacentCities);
+
+            //Take out any cities we have already visited to avoid getting ourselves into a cycle
+            foreach(City c in recentlyDiscoveredCities.ToList())
+            {
+                if (travelPath.Contains(c))
+                {
+                    recentlyDiscoveredCities.Remove(c);
+                }
+            }
+            
+            closestCity = recentlyDiscoveredCities[0];
+            
+
+        }
+
+
+
+        travelPath.Add(closestCity);
+        return travelPath;
+
     }
 
 }

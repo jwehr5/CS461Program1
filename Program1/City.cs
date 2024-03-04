@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-    public class City
+    public class City 
     {
         [Index(0)]
         public string Name { get; set; }

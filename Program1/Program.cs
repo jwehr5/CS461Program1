@@ -69,7 +69,7 @@ foreach (City city1 in citys)
 
 foreach (City city in citys)
 {
-    if (city.Name == "Salina")
+    if (city.Name == "Marion")
     {
         foreach (City adjacentCity in city.AdjacentCities)
         {
@@ -78,6 +78,7 @@ foreach (City city in citys)
         }
     }
 }
+
 
 
 
@@ -106,6 +107,22 @@ if (destinationCity.Contains(" "))
     destinationCity = destinationCity.Replace(" ", "_");
 }
 
+City originCity = null;
+City endCity = null;
+
+foreach (City c in citys)
+{
+    if (c.Name == startingCity)
+    {
+        originCity = c;
+    }
+
+    if (c.Name == destinationCity)
+    {
+        endCity = c;
+    }
+}
+
 
 
 Console.WriteLine();
@@ -131,24 +148,7 @@ foreach(string city in bfsTest)
 */
 
 //ID-DFS
-
-City originCity = null;
-City endCity = null;
-
-foreach(City  c in citys)
-{
-    if(c.Name == startingCity)
-    {
-        originCity = c;
-    }
-
-    if (c.Name == destinationCity)
-    {
-        endCity = c;
-    }
-}
-
-Console.WriteLine(SearchMethods.IterativeDeepeningDFS(originCity, endCity, 5));
+//Console.WriteLine(SearchMethods.IterativeDeepeningDFS(originCity, endCity, 5));
 
 
 //Best First Search
@@ -162,10 +162,27 @@ foreach(String s in bestFirstSearch)
 */
 
 
-//Console.WriteLine(SearchMethods.CalculateDistance(38.9220277, -97.2666667, 39.0379342, -96.8799338));
-//Console.WriteLine(SearchMethods.CalculateDistance(38.9220277, -97.2666667, 38.8254325, -97.702327));
-//Console.WriteLine(SearchMethods.CalculateDistance(38.9220277, -97.2666667, 38.3589767, -97.0267385));
-//Console.WriteLine(SearchMethods.CalculateDistance(38.9220277, -97.2666667, 38.88509, -99.326202));
+//Console.WriteLine(SearchMethods.CalculateDistance(39.0130335, -95.7782425, 37.6868403, -97.1657752));
+
+//Console.WriteLine(SearchMethods.CalculateDistance(38.2434672, -96.9378672, 37.6868403, -97.1657752));
+
+//Console.WriteLine(SearchMethods.CalculateDistance(38.3494571, -97.2156415, 37.6868403, -97.1657752));
+
+//Console.WriteLine(SearchMethods.CalculateDistance(38.0353742, -97.4239353, 37.6868403, -97.1657752));
+
+//Console.WriteLine(SearchMethods.CalculateDistance(38.8254325, -97.702327, 37.6868403, -97.1657752));
+
+//Console.WriteLine(SearchMethods.CalculateDistance(38.0572062, -97.9414547, 37.6868403, -97.1657752));
+
+
+
+//A* Search
+List<City> aStarSearchResult = SearchMethods.AStarSearch(originCity, endCity);
+
+foreach(City c in aStarSearchResult)
+{
+    Console.WriteLine(c.Name);
+}
 
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using CsvHelper;
 using CsvHelper.Configuration;
+using System.Diagnostics;
 
 
 //Initialize each city along with their x and y coordinates
@@ -69,7 +70,7 @@ foreach (City city1 in citys)
 
 foreach (City city in citys)
 {
-    if (city.Name == "Marion")
+    if (city.Name == "Andover")
     {
         foreach (City adjacentCity in city.AdjacentCities)
         {
@@ -82,10 +83,22 @@ foreach (City city in citys)
 
 
 
-//Console.WriteLine(SearchMethods.CalculateDistance(38.3494571, -97.2156415, 37.8098997, -96.8943313));
+//Console.WriteLine(SearchMethods.CalculateDistance(38.3704302, -97.6917722, 38.2434672, -96.9378672));
 
+//Console.WriteLine(SearchMethods.CalculateDistance(38.3704302, -97.6917722, 38.3494571, -97.2156415));
 
+//Console.WriteLine(SearchMethods.CalculateDistance(38.3704302,-97.6917722, 38.0353742, -97.4239353));
 
+//Console.WriteLine(SearchMethods.CalculateDistance(38.3704302,-97.6917722, 38.8254325, -97.702327));
+
+//Console.WriteLine(SearchMethods.CalculateDistance(38.3704302,-97.6917722, 38.0572062, -97.9414547));
+
+//Console.WriteLine(SearchMethods.CalculateDistance(38.8254325, -97.702327, 37.6868403, -97.1657752));
+
+//Console.WriteLine(SearchMethods.CalculateDistance(38.0572062, -97.9414547, 37.6868403, -97.1657752));
+
+Console.WriteLine(SearchMethods.CalculateDistance(38.9220277, -97.2666667, 37.6868403, -97.1657752));
+Console.WriteLine(SearchMethods.CalculateEuclideanDistance(38.9220277, -97.2666667, 37.6868403, -97.1657752));
 
 
 
@@ -127,15 +140,21 @@ foreach (City c in citys)
 
 Console.WriteLine();
 
-//Depth First Search
-//List<string> dfsTest = SearchMethods.DepthFirstSearch(citys, startingCity, destinationCity);
+Stopwatch sw = new Stopwatch();
 
+//Depth First Search
+//List<City> dfsTest = SearchMethods.DepthFirstSearch(originCity, endCity);
 /*
-foreach(string city in dfsTest)
+if(dfsTest.Count != 0)
 {
-    Console.WriteLine(city);
+    foreach (City city in dfsTest)
+    {
+        Console.WriteLine(city.Name);
+    }
 }
 */
+
+
 
 //Breadth First Search
 //List<string> bfsTest = SearchMethods.BreadthFirstSearch(citys, startingCity, destinationCity);
@@ -152,7 +171,12 @@ foreach(string city in bfsTest)
 
 
 //Best First Search
-//List<string> bestFirstSearch = SearchMethods.BestFirstSearch(citys, startingCity, destinationCity);
+sw.Start();
+List<string> bestFirstSearch = SearchMethods.BestFirstSearch(citys, startingCity, destinationCity);
+sw.Stop();
+TimeSpan ts = sw.Elapsed;
+Console.WriteLine(ts.ToString());
+sw.Reset();
 
 /*
 foreach(String s in bestFirstSearch)
@@ -162,27 +186,22 @@ foreach(String s in bestFirstSearch)
 */
 
 
-//Console.WriteLine(SearchMethods.CalculateDistance(39.0130335, -95.7782425, 37.6868403, -97.1657752));
 
-//Console.WriteLine(SearchMethods.CalculateDistance(38.2434672, -96.9378672, 37.6868403, -97.1657752));
-
-//Console.WriteLine(SearchMethods.CalculateDistance(38.3494571, -97.2156415, 37.6868403, -97.1657752));
-
-//Console.WriteLine(SearchMethods.CalculateDistance(38.0353742, -97.4239353, 37.6868403, -97.1657752));
-
-//Console.WriteLine(SearchMethods.CalculateDistance(38.8254325, -97.702327, 37.6868403, -97.1657752));
-
-//Console.WriteLine(SearchMethods.CalculateDistance(38.0572062, -97.9414547, 37.6868403, -97.1657752));
 
 
 
 //A* Search
+sw.Start();
 List<City> aStarSearchResult = SearchMethods.AStarSearch(originCity, endCity);
+sw.Stop();
+ ts = sw.Elapsed;
+Console.WriteLine(ts.ToString());
 
 foreach(City c in aStarSearchResult)
 {
     Console.WriteLine(c.Name);
 }
+
 
 
 

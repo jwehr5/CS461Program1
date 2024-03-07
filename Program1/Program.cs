@@ -4,6 +4,7 @@ using System.Globalization;
 using CsvHelper;
 using CsvHelper.Configuration;
 using System.Diagnostics;
+using System.Net;
 
 
 //Initialize each city along with their x and y coordinates
@@ -67,10 +68,11 @@ foreach (City city1 in citys)
 
 }
 
+//Print out the adjacent cities of a city, used for testing
 
 foreach (City city in citys)
 {
-    if (city.Name == "Andover")
+    if (city.Name == "Winfield")
     {
         foreach (City adjacentCity in city.AdjacentCities)
         {
@@ -80,113 +82,201 @@ foreach (City city in citys)
     }
 }
 
+Console.WriteLine(SearchMethods.CalculateDistance(37.2844228, -96.999848, 37.6868403, -97.1657752));
+//Console.WriteLine(SearchMethods.CalculateDistance(37.6913277, -97.0537108, ));
 
 
 
-//Console.WriteLine(SearchMethods.CalculateDistance(38.3704302, -97.6917722, 38.2434672, -96.9378672));
-
-//Console.WriteLine(SearchMethods.CalculateDistance(38.3704302, -97.6917722, 38.3494571, -97.2156415));
-
-//Console.WriteLine(SearchMethods.CalculateDistance(38.3704302,-97.6917722, 38.0353742, -97.4239353));
-
-//Console.WriteLine(SearchMethods.CalculateDistance(38.3704302,-97.6917722, 38.8254325, -97.702327));
-
-//Console.WriteLine(SearchMethods.CalculateDistance(38.3704302,-97.6917722, 38.0572062, -97.9414547));
-
-//Console.WriteLine(SearchMethods.CalculateDistance(38.8254325, -97.702327, 37.6868403, -97.1657752));
-
-//Console.WriteLine(SearchMethods.CalculateDistance(38.0572062, -97.9414547, 37.6868403, -97.1657752));
-
-Console.WriteLine(SearchMethods.CalculateDistance(38.9220277, -97.2666667, 37.6868403, -97.1657752));
-Console.WriteLine(SearchMethods.CalculateEuclideanDistance(38.9220277, -97.2666667, 37.6868403, -97.1657752));
-
-
-
-Console.WriteLine("Enter your starting city");
-string startingCity = Console.ReadLine();
-Console.WriteLine();
-
-Console.WriteLine("Enter your destination city");
-string destinationCity = Console.ReadLine();
-Console.WriteLine();
-
-if (startingCity.Contains(" "))
-{
-    startingCity = startingCity.Replace(" ", "_");
-}
-
-if (destinationCity.Contains(" "))
-{
-    destinationCity = destinationCity.Replace(" ", "_");
-}
+bool programDone = false;
+string startingCity = "";
+string destinationCity = "";
 
 City originCity = null;
 City endCity = null;
 
-foreach (City c in citys)
+//Variables for timing to execution of the search methods
+Stopwatch sw = new Stopwatch();
+double ts;
+
+while (!programDone)
 {
-    if (c.Name == startingCity)
+    //Ask for the starting city
+    bool startingCityIsValid = false;
+    while (!startingCityIsValid)
     {
-        originCity = c;
+        Console.WriteLine("Enter your starting city");
+         startingCity = Console.ReadLine();
+        startingCityIsValid = SearchMethods.IsCityValid(citys, startingCity);
+        if(startingCityIsValid == false)
+        {
+            Console.WriteLine("City not found in the database");
+        }
     }
 
-    if (c.Name == destinationCity)
+    //If the city has a space, replace it with an underscore
+    if (startingCity.Contains(" "))
     {
-        endCity = c;
+        startingCity = startingCity.Replace(" ", "_");
     }
+
+    Console.WriteLine();
+
+    //Ask for the ending city
+    bool endCityIsValid = false;
+    while (!endCityIsValid)
+    {
+        Console.WriteLine("Enter your destination city");
+         destinationCity = Console.ReadLine();
+        endCityIsValid = SearchMethods.IsCityValid(citys, destinationCity);
+        if (endCityIsValid == false)
+        {
+            Console.WriteLine("City not found in the database");
+        }
+    }
+
+    //If the city has a space, replace it with an underscore
+    if (destinationCity.Contains(" "))
+    {
+        destinationCity = destinationCity.Replace(" ", "_");
+    }
+
+    Console.WriteLine();
+
+
+    //Initialize the starting and ending cities
+    foreach (City c in citys)
+    {
+        if (c.Name == startingCity)
+        {
+            originCity = c;
+        }
+
+        if (c.Name == destinationCity)
+        {
+            endCity = c;
+        }
+    }
+
+    //Display the options and get the user's input
+    Console.WriteLine("Which search would you like to perform? Enter the corresponding key. \n" + "1 - Depth First Search \n" + "2 - Breadth First Search \n"
+                      + "3 - Iterative Deepening - DFS \n" + "4 - Best First Search \n" + "5 - A* Search \n");
+    int userChoice = Int32.Parse(Console.ReadLine());
+
+    switch (userChoice)
+    {
+        //Depth First Search
+        case 1:
+            {
+                Console.WriteLine("Performing Depth First Search...");
+
+                sw.Start();
+                List<City> dfs = SearchMethods.DepthFirstSearch(originCity, endCity);
+                sw.Stop();
+                
+                ts = sw.Elapsed.TotalSeconds;
+                Console.WriteLine("Total time of search is " + ts + " seconds");
+                sw.Reset();
+
+                if (dfs.Count != 0)
+                {
+                    Console.WriteLine("The route between the two cities is: ");
+                    DisplayRouteAndTotalDistance(dfs);
+                    Console.WriteLine();
+                }
+
+                break;
+            }
+
+        //Breadth First Search
+        case 2:
+            {
+                Console.WriteLine("Performing Breadth First Search...");
+
+                sw.Start();
+                List<City> bfs = SearchMethods.BreadthFirstSearch(originCity, endCity);
+                sw.Stop();
+
+                ts = sw.Elapsed.TotalSeconds;
+                Console.WriteLine("Total time of search is " + ts + " seconds");
+                sw.Reset();
+
+                if (bfs.Count != 0)
+                {
+                    Console.WriteLine("The route between the two cities is: ");
+                    DisplayRouteAndTotalDistance(bfs);
+                    Console.WriteLine();
+                }
+
+                break;
+
+            }
+        default:
+            {
+                Console.WriteLine("Invalid Option");
+                break;
+            }
+    }
+
+
+
+    Console.WriteLine("Would you like to perform another search" + "Type Y for yes. Type N for no");
+    string yesOrNo = Console.ReadLine().ToLower();
+
+    if(yesOrNo == "n")
+    {
+        programDone = true;
+    }
+
+
+
+}
+
+ static void DisplayRouteAndTotalDistance(List<City> route)
+{
+    double totalDistance = 0;
+    Console.WriteLine(route[0].Name);
+    for (int i = 0, j = 1; i < route.Count - 1; i++, j++)
+    {
+        Console.WriteLine(route[j].Name);
+
+        totalDistance += SearchMethods.CalculateDistance(route[i].Longitude, route[i].Latitude, route[j].Longitude, route[j].Latitude);
+    }
+
+    Console.WriteLine("The total distance is: " + totalDistance.ToString("0.00") + " miles");
+
 }
 
 
+
+
+
+//ID-DFS
+sw.Start();
+Console.WriteLine(SearchMethods.IterativeDeepeningDFS(originCity, endCity, 5));
+sw.Stop();
+ //ts = sw.Elapsed;
+//Console.WriteLine(ts.ToString());
+sw.Reset();
 
 Console.WriteLine();
 
-Stopwatch sw = new Stopwatch();
-
-//Depth First Search
-//List<City> dfsTest = SearchMethods.DepthFirstSearch(originCity, endCity);
-/*
-if(dfsTest.Count != 0)
-{
-    foreach (City city in dfsTest)
-    {
-        Console.WriteLine(city.Name);
-    }
-}
-*/
-
-
-
-//Breadth First Search
-//List<string> bfsTest = SearchMethods.BreadthFirstSearch(citys, startingCity, destinationCity);
-
-/*
-foreach(string city in bfsTest)
-{
-    Console.WriteLine(city);
-}
-*/
-
-//ID-DFS
-//Console.WriteLine(SearchMethods.IterativeDeepeningDFS(originCity, endCity, 5));
-
-
 //Best First Search
 sw.Start();
-List<string> bestFirstSearch = SearchMethods.BestFirstSearch(citys, startingCity, destinationCity);
+List<City> bestFirstSearch = SearchMethods.BestFirstSearch(originCity, endCity);
 sw.Stop();
-TimeSpan ts = sw.Elapsed;
-Console.WriteLine(ts.ToString());
+//ts = sw.Elapsed;
+//Console.WriteLine(ts.ToString());
 sw.Reset();
 
-/*
-foreach(String s in bestFirstSearch)
+if(bestFirstSearch.Count != 0)
 {
-    Console.WriteLine(s);
+    foreach(City s in bestFirstSearch)
+    {
+        Console.WriteLine(s.Name);
+    }
 }
-*/
 
-
-
+Console.WriteLine();
 
 
 
@@ -194,8 +284,8 @@ foreach(String s in bestFirstSearch)
 sw.Start();
 List<City> aStarSearchResult = SearchMethods.AStarSearch(originCity, endCity);
 sw.Stop();
- ts = sw.Elapsed;
-Console.WriteLine(ts.ToString());
+ //ts = sw.Elapsed;
+//Console.WriteLine(ts.ToString());
 
 foreach(City c in aStarSearchResult)
 {

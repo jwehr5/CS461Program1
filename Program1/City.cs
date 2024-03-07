@@ -12,10 +12,10 @@ using System.Threading.Tasks;
         public string Name { get; set; }
 
         [Index(1)]
-        public double XCoordinate { get; set; }
+        public double Longitude { get; set; }
 
         [Index(2)]
-        public double YCoordinate { get; set; }
+        public double Latitude { get; set; }
 
         [Ignore]
         public List<City> AdjacentCities { get; set; }

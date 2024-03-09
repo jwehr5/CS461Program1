@@ -70,9 +70,10 @@ foreach (City city1 in citys)
 
 //Print out the adjacent cities of a city, used for testing
 
+/*
 foreach (City city in citys)
 {
-    if (city.Name == "Winfield")
+    if (city.Name == "McPherson")
     {
         foreach (City adjacentCity in city.AdjacentCities)
         {
@@ -81,9 +82,8 @@ foreach (City city in citys)
         }
     }
 }
+*/
 
-Console.WriteLine(SearchMethods.CalculateDistance(37.2844228, -96.999848, 37.6868403, -97.1657752));
-//Console.WriteLine(SearchMethods.CalculateDistance(37.6913277, -97.0537108, ));
 
 
 
@@ -106,6 +106,13 @@ while (!programDone)
     {
         Console.WriteLine("Enter your starting city");
          startingCity = Console.ReadLine();
+
+        //If the city has a space, replace it with an underscore
+        if (startingCity.Contains(" "))
+        {
+            startingCity = startingCity.Replace(" ", "_");
+        }
+
         startingCityIsValid = SearchMethods.IsCityValid(citys, startingCity);
         if(startingCityIsValid == false)
         {
@@ -113,11 +120,7 @@ while (!programDone)
         }
     }
 
-    //If the city has a space, replace it with an underscore
-    if (startingCity.Contains(" "))
-    {
-        startingCity = startingCity.Replace(" ", "_");
-    }
+    
 
     Console.WriteLine();
 
@@ -127,6 +130,13 @@ while (!programDone)
     {
         Console.WriteLine("Enter your destination city");
          destinationCity = Console.ReadLine();
+
+        //If the city has a space, replace it with an underscore
+        if (destinationCity.Contains(" "))
+        {
+            destinationCity = destinationCity.Replace(" ", "_");
+        }
+
         endCityIsValid = SearchMethods.IsCityValid(citys, destinationCity);
         if (endCityIsValid == false)
         {
@@ -134,11 +144,7 @@ while (!programDone)
         }
     }
 
-    //If the city has a space, replace it with an underscore
-    if (destinationCity.Contains(" "))
-    {
-        destinationCity = destinationCity.Replace(" ", "_");
-    }
+    
 
     Console.WriteLine();
 
@@ -210,6 +216,79 @@ while (!programDone)
                 break;
 
             }
+        //ID-DFS
+        case 3:
+            {
+                Console.WriteLine("Performing ID-DFS... ");
+                Console.WriteLine("How many steps deep would you like to search?");
+                int steps = Int32.Parse(Console.ReadLine());
+
+                sw.Start();
+                List<City> iddfs = new List<City>();
+                bool iddfsSuccess = SearchMethods.IterativeDeepeningDFS(originCity, endCity, steps, ref iddfs);
+                sw.Stop();
+
+                ts = sw.Elapsed.TotalSeconds;
+                Console.WriteLine("Total time of search is " + ts + " seconds");
+                sw.Reset();
+
+                if (iddfsSuccess)
+                {
+                    Console.WriteLine("The route between the two cities is: ");
+                    DisplayRouteAndTotalDistance(iddfs);
+                    Console.WriteLine();
+                }
+                else
+                {
+                    Console.WriteLine("Could not find a route looking " + steps + " steps deep.");
+                }
+
+                break;
+            }
+        //Best first Search
+        case 4:
+            {
+                Console.WriteLine("Performing Best First Search...");
+
+                sw.Start();
+                List<City> bestFirstSearch = SearchMethods.BestFirstSearch(originCity, endCity);
+                sw.Stop();
+
+                ts = sw.Elapsed.TotalSeconds;
+                Console.WriteLine("Total time of search is " + ts + " seconds");
+                sw.Reset();
+
+                if(bestFirstSearch.Count != 0)
+                {
+                    Console.WriteLine("The route between the two cities is: ");
+                    DisplayRouteAndTotalDistance(bestFirstSearch);
+                    Console.WriteLine();
+                }
+
+                break;
+            }
+        // A* Search
+        case 5:
+            {
+                Console.WriteLine("Performing A* Search...");
+
+                sw.Start();
+                List<City> aStarSearchResult = SearchMethods.AStarSearch(originCity, endCity);
+                sw.Stop();
+
+                ts = sw.Elapsed.TotalSeconds;
+                Console.WriteLine("Total time of search is " + ts + " seconds");
+                sw.Reset();
+
+                if(aStarSearchResult.Count != 0)
+                {
+                    Console.WriteLine("The route between the two cities is: ");
+                    DisplayRouteAndTotalDistance(aStarSearchResult);
+                    Console.WriteLine();
+                }
+
+                break;
+            }
         default:
             {
                 Console.WriteLine("Invalid Option");
@@ -219,7 +298,7 @@ while (!programDone)
 
 
 
-    Console.WriteLine("Would you like to perform another search" + "Type Y for yes. Type N for no");
+    Console.WriteLine("Would you like to perform another search? " + "Type Y for yes. Type N for no");
     string yesOrNo = Console.ReadLine().ToLower();
 
     if(yesOrNo == "n")
@@ -245,59 +324,5 @@ while (!programDone)
     Console.WriteLine("The total distance is: " + totalDistance.ToString("0.00") + " miles");
 
 }
-
-
-
-
-
-//ID-DFS
-sw.Start();
-Console.WriteLine(SearchMethods.IterativeDeepeningDFS(originCity, endCity, 5));
-sw.Stop();
- //ts = sw.Elapsed;
-//Console.WriteLine(ts.ToString());
-sw.Reset();
-
-Console.WriteLine();
-
-//Best First Search
-sw.Start();
-List<City> bestFirstSearch = SearchMethods.BestFirstSearch(originCity, endCity);
-sw.Stop();
-//ts = sw.Elapsed;
-//Console.WriteLine(ts.ToString());
-sw.Reset();
-
-if(bestFirstSearch.Count != 0)
-{
-    foreach(City s in bestFirstSearch)
-    {
-        Console.WriteLine(s.Name);
-    }
-}
-
-Console.WriteLine();
-
-
-
-//A* Search
-sw.Start();
-List<City> aStarSearchResult = SearchMethods.AStarSearch(originCity, endCity);
-sw.Stop();
- //ts = sw.Elapsed;
-//Console.WriteLine(ts.ToString());
-
-foreach(City c in aStarSearchResult)
-{
-    Console.WriteLine(c.Name);
-}
-
-
-
-
-
-
-
-
 
 
